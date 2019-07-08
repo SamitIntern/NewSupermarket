@@ -155,7 +155,6 @@ func DeleteProduct(w http.ResponseWriter, r *http.Request) {
 }
 
 //This function shows the current repository, after all the adds and deletes that may have performed.
-//This function does not need any params
 
 func GetRepository(w http.ResponseWriter, r *http.Request) {
 

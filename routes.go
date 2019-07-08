@@ -9,18 +9,20 @@ type Route struct {
 	HandlerFunc http.HandlerFunc
 }
 
+//These are all the defined routes for every functionality of this API
+
 type Routes []Route
 
 var routes Routes = Routes{
 
 	Route{
-		"TodoIndex",
+		"Index",
 		"GET",
 		"/supermarket/",
 		Index,
 	},
 	Route{
-		"TodoCreateRepo",
+		"CreateRepo",
 		"POST",
 		"/supermarket/createrepo/",
 		InitializeRepository,
@@ -32,7 +34,7 @@ var routes Routes = Routes{
 		ShowRepository,
 	},
 	Route{
-		"TodoNewProduce",
+		"NewProduce",
 		"POST",
 		"/supermarket/new/",
 		AddNewProduct,

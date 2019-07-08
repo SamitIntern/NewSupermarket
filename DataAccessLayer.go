@@ -175,7 +175,6 @@ func CheckValidAddParamTypes(currentProduct Product) bool{
 //This function contributes to the functionality of addition of a new produce to the repository
 //This function validates the params before a new produce is added to the repository by making sure that neither the
 // "Produce Name" or the "Produce Code" fields are empty
-//This function is called by the function "AddItem" of this class
 
 func CheckValidAddParamNumber(currentProduct Product) bool{
 	var valid bool
