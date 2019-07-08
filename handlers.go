@@ -19,21 +19,21 @@ func Index(w http.ResponseWriter, r *http.Request) {
 //This function is used when the user wants to check details of a particular produce
 //This needs the Produce ID as a parameter
 
-func TodoShow(w http.ResponseWriter, r *http.Request) {
+func ShowRepository(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	var todoId int
+	var productId int
 	var err error
 	fmt.Println(vars)
 
-	if todoId, err = strconv.Atoi(vars["produceId"]); err != nil {
+	if productId, err = strconv.Atoi(vars["produceId"]); err != nil {
 		panic(err)
 	}
 	fmt.Println(err)
-	todo := FindItem(todoId)
-	if todo.Id > 0 {
+	product := FindItem(productId)
+	if product.Id > 0 {
 		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 		w.WriteHeader(http.StatusOK)
-		if err := json.NewEncoder(w).Encode(todo); err != nil {
+		if err := json.NewEncoder(w).Encode(product); err != nil {
 			panic(err)
 		}
 		return
@@ -51,7 +51,7 @@ func TodoShow(w http.ResponseWriter, r *http.Request) {
 //Regardless of the number of adds or deletes called, this method would re-initialize the repository to have just the
 // four objects with their respective produce codes and prices as mentioned in the ticket
 
-func TodoCreate(w http.ResponseWriter, r *http.Request) {
+func InitializeRepository(w http.ResponseWriter, r *http.Request) {
 
 	t := InitializeInventory()
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
@@ -68,9 +68,9 @@ func TodoCreate(w http.ResponseWriter, r *http.Request) {
 // a hyphen
 //The price should be a float value
 
-func TodoCreateFromJSON(w http.ResponseWriter, r *http.Request) {
+func AddNewProduct(w http.ResponseWriter, r *http.Request) {
 
-	var todo Product
+	var newProduct Product
 	body, err := ioutil.ReadAll(io.LimitReader(r.Body, 1048576))
 	if err != nil {
 		panic(err)
@@ -78,19 +78,19 @@ func TodoCreateFromJSON(w http.ResponseWriter, r *http.Request) {
 	if err := r.Body.Close(); err != nil {
 		panic(err)
 	}
-	//if todo.Id == 0{
-		if err := json.Unmarshal(body, &todo); err != nil {
-			w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-			w.WriteHeader(422)
-			if err := json.NewEncoder(w).Encode(jsonErr{Code: http.StatusUnprocessableEntity, Text: "Please provide a valid JSON"}); err != nil {
-				panic(err)
-			}
-			return
+	//if newProduct.Id == 0{
+	if err := json.Unmarshal(body, &newProduct); err != nil {
+		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+		w.WriteHeader(422)
+		if err := json.NewEncoder(w).Encode(jsonErr{Code: http.StatusUnprocessableEntity, Text: "Please provide a valid JSON"}); err != nil {
+			panic(err)
 		}
+		return
+	}
 	//}
 
-	t := AddItem(todo)
-	if t.Id == 0{
+	product := AddItem(newProduct)
+	if product.Id == 0{
 		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 		w.WriteHeader(http.StatusBadRequest)
 		if err := json.NewEncoder(w).Encode(jsonErr{Code: http.StatusBadRequest, Text: "Please provide valid entry of the product to be entered into the repository"}); err != nil {
@@ -100,7 +100,7 @@ func TodoCreateFromJSON(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusCreated)
-	if err := json.NewEncoder(w).Encode(t); err != nil {
+	if err := json.NewEncoder(w).Encode(product); err != nil {
 		panic(err)
 	}
 }
@@ -109,26 +109,26 @@ func TodoCreateFromJSON(w http.ResponseWriter, r *http.Request) {
 //This function is called when the user wants to delete a produce from the repository
 //This function just takes the Produce ID as a param which has to be an integer
 
-func TodoDelete(w http.ResponseWriter, r *http.Request) {
+func DeleteProduct(w http.ResponseWriter, r *http.Request) {
 
-	var newtodos Inventory
+	var newRepository Inventory
 
 	vars := mux.Vars(r)
 	var produceId int
 	var err error
-	var todoslength int
+	var inventorySize int
 
 	if produceId, err = strconv.Atoi(vars["produceId"]); err != nil {
 		panic(err)
 	}
 
-	todoslength = len(inventory)
+	inventorySize = len(inventory)
 
-	newtodos = DeleteItem(produceId)
+	newRepository = DeleteItem(produceId)
 
-	if len(newtodos) == 0{
-		if todoslength == 1{
-			inventory = newtodos
+	if len(newRepository) == 0{
+		if inventorySize == 1{
+			inventory = newRepository
 			w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 			w.WriteHeader(http.StatusOK)
 			if err := json.NewEncoder(w).Encode(inventory); err != nil {
@@ -136,7 +136,7 @@ func TodoDelete(w http.ResponseWriter, r *http.Request) {
 			}
 			return
 		}
-		if todoslength > 1 {
+		if inventorySize > 1 {
 			w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 			w.WriteHeader(http.StatusNotFound)
 			if err := json.NewEncoder(w).Encode(jsonErr{Code: http.StatusNotFound, Text: "No such produce in the repository"}); err != nil {
@@ -145,27 +145,27 @@ func TodoDelete(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-		inventory = newtodos
-		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-		w.WriteHeader(http.StatusOK)
-		if err := json.NewEncoder(w).Encode(inventory); err != nil {
-			panic(err)
-		}
-		return
+	inventory = newRepository
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.WriteHeader(http.StatusOK)
+	if err := json.NewEncoder(w).Encode(inventory); err != nil {
+		panic(err)
+	}
+	return
 }
 
 //This function shows the current repository, after all the adds and deletes that may have performed.
 //This function does not need any params
 
-func TodoShowAll(w http.ResponseWriter, r *http.Request) {
+func GetRepository(w http.ResponseWriter, r *http.Request) {
 
-	todos := GetAllItems()
+	repository := GetAllItems()
 	fmt.Print("Printing from handlers.go  ::   ")
-	fmt.Print(todos)
+	fmt.Print(repository)
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
-	if err := json.NewEncoder(w).Encode(todos); err != nil {
+	if err := json.NewEncoder(w).Encode(repository); err != nil {
 		panic(err)
 	}
-		return
+	return
 }

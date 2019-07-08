@@ -23,31 +23,31 @@ var routes Routes = Routes{
 		"TodoCreateRepo",
 		"POST",
 		"/supermarket/createrepo/",
-		TodoCreate,
+		InitializeRepository,
 	},
 	Route{
-		"TodoShow",
+		"ShowRepository",
 		"GET",
 		"/supermarket/{produceId}/",
-		TodoShow,
+		ShowRepository,
 	},
 	Route{
 		"TodoNewProduce",
 		"POST",
 		"/supermarket/new/",
-		TodoCreateFromJSON,
+		AddNewProduct,
 	},
 	Route{
 		"DeleteProduce",
 		"DELETE",
 		"/supermarket/delete/{produceId}/",
-		TodoDelete,
+		DeleteProduct,
 	},
 	Route{
 		"ShowAll",
 		"GET",
 		"/supermarket/all/showall/",
-		TodoShowAll,
+		GetRepository,
 	},
 
 

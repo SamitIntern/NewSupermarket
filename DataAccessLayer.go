@@ -15,9 +15,9 @@ var inventory Inventory
 //This function checks the repository if a produce with the same produce code is present in the repository
 //This function is called by the function "AddItem" of this class
 
-func CheckForExistingProduce(todo Product) Product {
+func CheckForExistingProduce(product Product) Product {
 	for _, products := range inventory {
-		if strings.EqualFold(todo.ProduceCode, products.ProduceCode) {
+		if strings.EqualFold(product.ProduceCode, products.ProduceCode) {
 			return products
 		}
 	}
@@ -39,7 +39,7 @@ func CheckForNonExistingProduce(produceId int) Product {
 
 //This function contributes to the functionality of searching for a produce in the repository
 //This function checks the repository if a produce with the same produce ID is present in the repository
-//This function is called by the function "TodoShow" of the "handlers.go" class
+//This function is called by the function "ShowRepository" of the "handlers.go" class
 
 func FindItem(id int) Product {
 	for _, currentProduct := range inventory {
@@ -51,7 +51,7 @@ func FindItem(id int) Product {
 }
 
 //This function contributes to the functionality of creating the repository
-//This function is called by the function "TodoCreate" of the "handlers.go" class
+//This function is called by the function "InitializeRepository" of the "handlers.go" class
 
 func InitializeInventory() Inventory {
 
@@ -84,12 +84,12 @@ func CreateItem(currentProduct Product) Product {
 }
 
 //This function contributes to the functionality of addition of a new produce to the repository
-//This function is called by the function "TodoAdd" of "handlers.go" class
+//This function is called by the function "AddNewProduct" of "handlers.go" class
 
 func AddItem(currentProduct Product) Product {
 
-	var oldTodo = CheckForExistingProduce(currentProduct)
-	if oldTodo.Id > 0 {
+	var oldProduct = CheckForExistingProduce(currentProduct)
+	if oldProduct.Id > 0 {
 		return Product{}
 	}
 
@@ -108,7 +108,7 @@ func AddItem(currentProduct Product) Product {
 }
 
 //This function contributes to the functionality of removal of a produce from the repository
-//This function is called by the function "TodoDelete" of "handlers.go" class
+//This function is called by the function "DeleteProduct" of "handlers.go" class
 
 func DeleteItem( produceId int) Inventory {
 
@@ -130,7 +130,7 @@ func DeleteItem( produceId int) Inventory {
 }
 
 //This function contributes to the functionality of removal of a produce from the repository
-//This function is called by the function "TodoShowAll" of "handlers.go" class
+//This function is called by the function "GetRepository" of "handlers.go" class
 
 func GetAllItems() Inventory {
 	fmt.Print(inventory)
