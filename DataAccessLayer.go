@@ -115,8 +115,8 @@ func AddItem(currentProduct Product) Product {
 
 func DeleteItem( produceId int) Inventory {
 
-	var index = CheckForNonExistingProduce(produceId)
-	if index == 0 {
+	var index = CheckForNonExistingProduce(produceId) - 1
+	if index == -1 {
 		return Inventory{}
 	}
 
