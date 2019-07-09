@@ -103,9 +103,10 @@ func AddItem(currentProduct Product) Product {
 		return Product{}
 	}
 
-	currentId += 1
+	/*currentId += 1
 	currentProduct.Id = currentId
-	inventory = append(inventory, currentProduct)
+	inventory = append(inventory, currentProduct)*/
+	currentProduct = CreateItem(currentProduct)
 	return currentProduct
 }
 
