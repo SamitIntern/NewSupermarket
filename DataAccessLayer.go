@@ -28,13 +28,15 @@ func CheckForExistingProduce(product Product) Product {
 //This function checks the repository if a produce with the same produce ID is present in the repository
 //This function is called by the function "DeleteItem" of this class
 
-func CheckForNonExistingProduce(produceId int) Product {
+func CheckForNonExistingProduce(produceId int) int {
+	var index = 0
 	for _, currentProduct := range inventory {
+		index++
 		if currentProduct.Id == produceId {
-			return currentProduct
+			return index
 		}
 	}
-	return Product{}
+	return 0
 }
 
 //This function contributes to the functionality of searching for a produce in the repository
@@ -112,12 +114,12 @@ func AddItem(currentProduct Product) Product {
 
 func DeleteItem( produceId int) Inventory {
 
-	var oldProduct = CheckForNonExistingProduce(produceId)
-	if oldProduct.Id == 0 {
+	var index = CheckForNonExistingProduce(produceId)
+	if index == 0 {
 		return Inventory{}
 	}
 
-	var newInventory Inventory
+	/*var newInventory Inventory
 	for _, currentProduct := range inventory {
 		if currentProduct.Id == produceId{
 			continue
@@ -126,7 +128,12 @@ func DeleteItem( produceId int) Inventory {
 		}
 	}
 	inventory = newInventory
-	return newInventory
+	return newInventory*/
+
+	inventory[index] = inventory[len(inventory)-1]
+	inventory = inventory[:len(inventory)-1]
+
+	return inventory
 }
 
 //This function contributes to the functionality of removal of a produce from the repository
